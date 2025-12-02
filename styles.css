@@ -1,0 +1,487 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600&family=DM+Sans:wght@400;500&display=swap');
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow-x: hidden;
+  font-family: 'DM Sans', 'Space Grotesk', system-ui, -apple-system, sans-serif;
+  color: #e9f5ff;
+  background: radial-gradient(circle at 40% 25%, #3aa7ff, #19507d 65%, #163a6b 100%) !important;
+  position: relative;
+}
+
+#surface,
+#caustics,
+#bg,
+#sun {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 0;
+}
+
+#bg {
+  background-color: transparent;
+  background-image: radial-gradient(circle at 30% 20%, rgba(110, 220, 255, 0.4), transparent 48%),
+    radial-gradient(circle at 70% 60%, rgba(60, 160, 240, 0.3), transparent 52%),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.28), rgba(70, 110, 160, 0.22) 32%, rgba(15, 20, 35, 0.85));
+  mix-blend-mode: screen;
+  opacity: 0.8;
+}
+
+#surface {
+  mix-blend-mode: screen;
+}
+
+#surface::before,
+#surface::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-image:
+    linear-gradient(135deg, rgba(60, 150, 230, 0.28), rgba(20, 60, 120, 0.14)),
+    url("https://images.unsplash.com/photo-1518837695005-2083093ee35b?auto=format&fit=crop&w=1200&q=70");
+  background-color: rgba(20, 60, 100, 0.2);
+  background-repeat: repeat-x;
+  background-blend-mode: screen;
+  --duration: 8s;
+  --lowHeight: 30vh;
+  --highHeight: 70vh;
+  --layerNum: 2;
+  --index: 0;
+  --opacity: 0.35;
+  animation: surface var(--duration) linear infinite;
+  animation-delay: calc((var(--duration) / var(--layerNum)) * var(--index) * -1);
+  opacity: 0.32;
+  mask-image: linear-gradient(to top, white, transparent var(--lowHeight));
+}
+
+#surface::before {
+  --index: 0;
+  transform: scale3d(1, -1, 1);
+}
+
+#surface::after {
+  --index: 1;
+  transform: scale3d(-1, -1, 1);
+}
+
+#caustics {
+  filter: url(#noise1);
+}
+
+#caustics::before,
+#caustics::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-image:
+    linear-gradient(115deg, rgba(110, 210, 255, 0.26), rgba(20, 60, 100, 0.12)),
+    url("https://images.unsplash.com/photo-1568145675395-66a2eda0c6d7?auto=format&fit=crop&w=1200&q=70");
+  background-repeat: repeat;
+  background-blend-mode: screen;
+  --duration: 10s;
+  --gapY: 0px;
+  background-size: 100vw 30vh;
+  animation: caustics calc(var(--duration)) linear infinite;
+  opacity: 0.35;
+  mask-image: linear-gradient(to top, white, transparent, transparent, transparent);
+}
+
+#caustics::after {
+  --duration: 11s;
+  --gapY: 10vh;
+  animation-delay: -2s;
+  transform: scale3d(-1, 1, 1);
+}
+
+#sun {
+  mix-blend-mode: overlay;
+}
+
+#sun div {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform-origin: 50vw 0;
+  animation: sun 7s ease infinite alternate;
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 15%,
+    white 50%,
+    white 55%,
+    transparent 80%
+  );
+}
+
+#sun #sun_layer1 {
+  background: linear-gradient(
+    to right,
+    transparent 39%,
+    white 40%,
+    transparent 41%,
+    transparent 48.5%,
+    white 50%,
+    transparent 51.5%,
+    transparent 53%,
+    white 54%,
+    transparent 55%,
+    transparent 70%,
+    white 71%,
+    transparent 72%
+  );
+}
+
+#sun #sun_layer2 {
+  animation-delay: -2s;
+  animation-duration: 7.8s;
+  animation-direction: alternate-reverse;
+  background: linear-gradient(
+    to right,
+    transparent 32%,
+    white 33%,
+    transparent 34%,
+    transparent 38%,
+    white 39%,
+    transparent 40%,
+    transparent 53%,
+    white 54%,
+    transparent 55%,
+    transparent 63.5%,
+    white 65%,
+    transparent 66.5%
+  );
+}
+
+#sun #sun_layer3 {
+  animation-delay: -5s;
+  animation-duration: 8.5s;
+  background: linear-gradient(
+    to right,
+    transparent 38.5%,
+    white 40%,
+    transparent 41.5%,
+    transparent 47%,
+    white 48%,
+    transparent 49%,
+    transparent 52%,
+    white 53%,
+    transparent 54%,
+    transparent 60%,
+    white 61%,
+    transparent 62%
+  );
+}
+
+@keyframes surface {
+  0% {
+    opacity: 0;
+    background-position: center bottom;
+    background-size: 100% var(--highHeight);
+  }
+  20% {
+    opacity: var(--opacity);
+  }
+  100% {
+    opacity: 0;
+    background-position: center bottom calc(-1 * var(--lowHeight));
+    background-size: 100% var(--lowHeight);
+  }
+}
+
+@keyframes caustics {
+  0% {
+    background-position: bottom var(--gapY) left;
+  }
+  100% {
+    background-position: bottom var(--gapY) left -100vw;
+  }
+}
+
+@keyframes sun {
+  0% {
+    opacity: 0.08;
+    transform: skew(5deg) scale3d(3, 1.5, 1);
+  }
+  50% {
+    opacity: 0.06;
+    transform: skew(0deg) scale3d(1.5, 1, 1);
+  }
+  100% {
+    opacity: 0.08;
+    transform: skew(-5deg) scale3d(3, 1, 1);
+  }
+}
+
+#blueprint {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 5; /* blueprint behind fish but in front of background */
+}
+
+#particles {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 6;
+  pointer-events: none;
+  overflow: hidden;
+  mix-blend-mode: screen;
+}
+
+#scale-tooltips {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 8;
+}
+
+.scale-tooltip {
+  position: absolute;
+  min-width: 140px;
+  max-width: 220px;
+  padding: 8px 10px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.35;
+  color: #f4fbff;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.9);
+  background: rgba(5, 10, 22, 0.95);
+  border: 1px solid rgba(140, 220, 255, 0.9);
+  border-radius: 10px;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 12px 30px rgba(0, 5, 20, 0.6), 0 0 0 1px rgba(20, 120, 200, 0.25);
+  opacity: 0;
+  transform: translate(-50%, -140%);
+  transition: opacity 0.1s linear;
+  text-align: left;
+}
+
+.particle {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(180, 240, 255, 0.9), rgba(120, 200, 255, 0.4) 45%, rgba(120, 200, 255, 0));
+  opacity: 0.8;
+  filter: blur(0.3px);
+  animation: particle-move var(--duration, 20000ms) linear infinite, particle-fade 3s ease-in-out infinite;
+  animation-delay: var(--delay, 0ms);
+  transform: translate3d(0, 0, 0);
+}
+
+@keyframes particle-move {
+  from {
+    transform: translate3d(var(--startX, 0vw), var(--startY, 120vh), 0);
+  }
+  to {
+    transform: translate3d(var(--endX, 0vw), var(--endY, -30vh), 0);
+  }
+}
+
+@keyframes particle-fade {
+  0% { opacity: 0.85; }
+  50% { opacity: 0.55; }
+  100% { opacity: 0.85; }
+}
+
+#container {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 7; /* fish on top of blueprint */
+}
+#container canvas {
+  background: transparent !important;
+}
+
+#hud {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  max-width: 360px;
+  padding: 14px 16px;
+  pointer-events: none;
+  z-index: 9; /* ensure it sits above the 3D canvas */
+  background: rgba(10, 25, 45, 0.45);
+  border: 1px solid rgba(120, 200, 255, 0.3);
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(0, 10, 30, 0.35);
+  backdrop-filter: blur(12px);
+}
+
+#hud h1 {
+  margin: 0 0 6px;
+  font-size: 18px;
+  letter-spacing: 0.4px;
+  font-family: 'Space Grotesk', 'DM Sans', sans-serif;
+  color: #c3e6ff;
+}
+
+#hud p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #b8d8f7;
+}
+
+#timeline {
+  margin-top: 14px;
+  pointer-events: auto;
+  padding-top: 10px;
+  border-top: 1px solid rgba(120, 200, 255, 0.2);
+}
+
+#timeline label {
+  display: block;
+  font-size: 12px;
+  margin-bottom: 6px;
+  color: #99c8ff;
+  letter-spacing: 0.2px;
+}
+
+#yearSlider {
+  width: 100%;
+  margin: 6px 0 10px;
+  cursor: pointer;
+  -webkit-appearance: none;
+  height: 6px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #4fb7ff 0%, #1e86ff 60%, #f7ad45 100%);
+  box-shadow: 0 4px 12px rgba(0, 50, 120, 0.35);
+}
+
+#yearSlider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #fff, #d6ecff 55%, #3fa5ff 90%);
+  border: 2px solid #a5d6ff;
+  box-shadow: 0 4px 12px rgba(0, 100, 180, 0.6);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+#yearSlider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #fff, #d6ecff 55%, #3fa5ff 90%);
+  border: 2px solid #a5d6ff;
+  box-shadow: 0 4px 12px rgba(0, 100, 180, 0.6);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+#yearSlider::-webkit-slider-thumb:active,
+#yearSlider::-moz-range-thumb:active {
+  transform: scale(1.08);
+  box-shadow: 0 6px 14px rgba(0, 120, 210, 0.7);
+}
+
+#yearLabel {
+  font-size: 11px;
+  color: #cde6ff;
+  margin-top: 2px;
+  font-weight: 500;
+  letter-spacing: 0.2px;
+}
+
+#yearFact {
+  font-size: 11px;
+  color: #9fd6ff;
+  margin-top: 6px;
+  line-height: 1.5;
+  opacity: 0.9;
+}
+
+#info-panel {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 340px;
+  max-width: 40vw;
+  pointer-events: auto;
+  z-index: 9;
+  background: rgba(10, 25, 45, 0.45);
+  border: 1px solid rgba(120, 200, 255, 0.3);
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(0, 10, 30, 0.35);
+  backdrop-filter: blur(12px);
+  color: #d8e9ff;
+}
+
+.info-tabs {
+  display: flex;
+  gap: 6px;
+  padding: 10px 12px 0;
+}
+
+.info-tab {
+  flex: 1;
+  border: 1px solid rgba(120, 200, 255, 0.3);
+  background: rgba(15, 40, 70, 0.5);
+  color: #c3e6ff;
+  border-radius: 10px;
+  padding: 8px 6px;
+  font-family: 'DM Sans', 'Space Grotesk', system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.info-tab.active {
+  background: rgba(80, 170, 255, 0.22);
+  border-color: rgba(120, 200, 255, 0.6);
+  color: #e9f7ff;
+}
+
+.info-body {
+  padding: 10px 14px 14px;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.info-body h2 {
+  margin: 6px 0 4px;
+  font-size: 13px;
+  color: #cde6ff;
+  letter-spacing: 0.2px;
+}
+
+.info-body p {
+  margin: 0 0 8px;
+  color: #b9d6f5;
+}
+
+.info-body ul {
+  padding-left: 16px;
+  margin: 4px 0 0;
+  color: #b9d6f5;
+}
+
+.info-body li {
+  margin: 4px 0;
+}
+
+.hidden {
+  display: none;
+}

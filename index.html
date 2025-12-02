@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>gAI Environmental Fish</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+      }
+    }
+  </script>
+</head>
+<body>
+  <div id="backdrop"></div>
+  <div id="surface"></div>
+  <div id="caustics"></div>
+  <div id="bg"></div>
+  <div id="sun">
+    <div id="sun_layer1"></div>
+    <div id="sun_layer2"></div>
+    <div id="sun_layer3"></div>
+  </div>
+  <div id="particles"></div>
+  <div id="scale-tooltips"></div>
+  <svg width="0" height="0" aria-hidden="true" focusable="false">
+    <filter id="noise1">
+      <feTurbulence type="turbulence" baseFrequency=".05" numOctaves="1" seed="3" stitchTiles="stitch" />
+      <feDisplacementMap in="SourceGraphic" scale="10" />
+    </filter>
+  </svg>
+  <canvas id="blueprint"></canvas>
+  <div id="container"></div>
+  <div id="hud">
+    <h1>gAI & the Environment</h1>
+    <p id="info">Spin the fish. Hover and click on glowing areas to learn more.</p>
+    <div id="timeline">
+      <label for="yearSlider">Timeline:</label>
+      <input type="range" id="yearSlider" min="2020" max="2050" value="2020" step="1">
+      <div id="yearLabel">2020: Pre-gAI Baseline</div>
+      <div id="yearFact"></div>
+    </div>
+  </div>
+  <div id="info-panel">
+    <div class="info-tabs">
+      <button class="info-tab active" data-tab="story">Why a Betta Fish?</button>
+      <button class="info-tab" data-tab="howto">How to use</button>
+      <button class="info-tab" data-tab="how">How this was made</button>
+    </div>
+    <div class="info-body" data-tabcontent="story">
+      <h2>Why a Betta Fish?</h2>
+      <p>The betta is solitary and fragile—just one fish per tank. That mirrors humanity’s single planet: no backup world to move to. Its vivid colors show the beauty and irreplaceability of Earth’s resources. As colors fade and scales drift away, the fish becomes a living metaphor for gAI’s environmental cost: progress means nothing without the ecosystem that sustains it.</p>
+      <h2>Why a Fish at All?</h2>
+      <p>Fish are living indicators of ecosystem health—water quality, temperature, pollution, biodiversity loss. When the environment suffers, they show the damage first. In water, changes in clarity, color, and movement feel immediate. Watching the fish deteriorate makes the impact visible and emotional, not just a number.</p>
+    </div>
+    <div class="info-body hidden" data-tabcontent="howto">
+      <h2>How to use this</h2>
+      <ul>
+        <li>Drag the timeline to change years; watch the fish, scales, particles, and facts update.</li>
+        <li>Click the glowing scale flares on the fish to toggle their fact callouts; click again to hide.</li>
+        <li>Hover/click the glowing hitboxes to read environmental impacts.</li>
+        <li>Orbit: drag to rotate, scroll/pinch to zoom—controls stay centered on the fish.</li>
+      </ul>
+    </div>
+    <div class="info-body hidden" data-tabcontent="how">
+      <h2>How this was made</h2>
+      <ul>
+        <li>Three.js scene with HDR-ish lighting and ACES filmic tonemapping.</li>
+        <li>GLTF betta model + built-in skeletal animation; additive halo + rim lights.</li>
+        <li>Timeline slider drives pollution progress, tint, fog, particles, and scale “flares.”</li>
+        <li>Canvas blueprint overlay and CSS animated underwater layers/particles.</li>
+        <li>Tooltip callouts follow scale flares; HUD is glassy, pointer-safe UI.</li>
+        <li>Credits:
+          <ul>
+            <li>“Betta Splendens” by BlueMesh (<a href="https://skfb.ly/6SuoD" target="_blank" rel="noreferrer">skfb.ly/6SuoD</a>) — CC BY 4.0.</li>
+            <li>“Underwater Background #2” by Wakana Y.K. (<a href="https://codepen.io/wakana-k/pen/KKYmxYq" target="_blank" rel="noreferrer">CodePen</a>).</li>
+          </ul>
+        </li>
+        <li>Citations:
+          <ul>
+            <li>Berreby, D. 2024. “As Use of A.I. Soars, So Does the Energy and Water It Requires.” Yale E360. <a href="https://e360.yale.edu/features/artificial-intelligence-climate-energy-emissions" target="_blank" rel="noreferrer">Link</a></li>
+            <li>de Vries, A. 2023. “The Growing Energy Footprint of Artificial Intelligence.” Joule 7(10). <a href="https://doi.org/10.1016/j.joule.2023.09.004" target="_blank" rel="noreferrer">Link</a></li>
+            <li>DeGeurin, M. 2023a. “Move Aside, Crypto. AI Could Be the Next Climate Disaster.” Gizmodo. <a href="https://gizmodo.com/chatgpt-ai-openai-carbon-emissions-stanford-report-1850288635" target="_blank" rel="noreferrer">Link</a></li>
+            <li>DeGeurin, M. 2023b. “‘Thirsty’ AI…” Gizmodo. <a href="https://gizmodo.com/chatgpt-ai-water-185000-gallons-training-nuclear-1850324249" target="_blank" rel="noreferrer">Link</a></li>
+            <li>Gendron, W. 2023. “ChatGPT Needs to ‘Drink’…” Business Insider. <a href="https://www.businessinsider.com/chatgpt-generative-ai-water-use-environmental-impact-study-2023-4" target="_blank" rel="noreferrer">Link</a></li>
+            <li>Li, P. et al. 2023. “Making AI Less ‘Thirsty’…” arXiv. <a href="https://arxiv.org/abs/2304.03271" target="_blank" rel="noreferrer">Link</a></li>
+            <li>Markey, E. 2024. Senate press release on AI impacts. <a href="https://www.markey.senate.gov/news/press-releases/markey-heinrich-eshoo-beyer-introduce-legislation-to-investigate-measure-environmental-impacts-of-artificial-intelligence" target="_blank" rel="noreferrer">Link</a></li>
+            <li>Ren, S. 2023. “How Much Water Does AI Consume?” OECD.AI. <a href="https://oecd.ai/en/wonk/how-much-water-does-ai-consume" target="_blank" rel="noreferrer">Link</a></li>
+            <li>Taft, M. 2025. “AI Is Eating Data Center Power Demand…” Wired. <a href="https://www.wired.com/story/new-research-energy-electricity-artificial-intelligence-ai/" target="_blank" rel="noreferrer">Link</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>
